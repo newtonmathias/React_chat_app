@@ -6,7 +6,14 @@ import RoomList from './components/RoomList';
 import NewRoomForm from './components/NewRoomForm';
 import { tokenUrl, instanceLocator } from './config'
 import './App.css';
+
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      messages: []
+    }
+  }
 
   componentDidMount () {
     const chatManager = new ChatManager({
@@ -22,8 +29,10 @@ class App extends Component {
       currentUser.subscribeToRoom({
         roomId: '25184618',
         hooks: ({
-          onNewMessage: message => {
-            console.log('message.text: ', message.text)
+          onMessage: message => {
+            this.setState({
+              messages: [...this.state.messages, message]
+            })
           }
         })
       })
@@ -31,10 +40,11 @@ class App extends Component {
   }
 
   render() {
+    console.log('message.text: ', this.state.messages)
     return (
       <div className="app">
         <RoomList />
-        <MessageList />
+        <MessageList messages={this.state.messages}/>
         <SendMessageForm />
         <NewRoomForm />
       </div>
